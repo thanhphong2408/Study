@@ -35,7 +35,9 @@ const AppliedApplications = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Danh sách đơn đăng ký</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        List Register <span className="text-secondary">Instructor</span>
+      </h2>
 
       {/* Hiển thị thông báo lỗi nếu có */}
       {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -52,7 +54,7 @@ const AppliedApplications = () => {
               onClick={handleApplyInstructor}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              Đăng ký làm giảng viên
+              Register as a Instructor
             </button>
           </div>
 
@@ -68,27 +70,26 @@ const AppliedApplications = () => {
                 )}
                 <div>
                   <p>
-                    <strong>Tên:</strong> {request.name}
+                    <strong>Name:</strong> {request.name}
                   </p>
                   <p>
                     <strong>Email:</strong> {request.email}
                   </p>
                   <p>
-                    <strong>Địa chỉ:</strong> {request.address}
+                    <strong>Address:</strong> {request.address}
                   </p>
                   <p>
-                    <strong>Số điện thoại:</strong> {request.phone}
+                    <strong>Phone:</strong> {request.phone}
                   </p>
                   <p>
-                    <strong>Kỹ năng:</strong>{" "}
-                    {request.skills || "Chưa cập nhật"}
+                    <strong>Skills:</strong> {request.skills || "Chưa cập nhật"}
                   </p>
                   <p>
-                    <strong>Giới thiệu:</strong>{" "}
+                    <strong>About:</strong>{" "}
                     {request.about || "Chưa có thông tin"}
                   </p>
                   <p>
-                    <strong>Trạng thái:</strong>{" "}
+                    <strong>Status:</strong>{" "}
                     {request.status === "approved"
                       ? "✅ Đã duyệt"
                       : request.status === "denied"
