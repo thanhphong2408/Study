@@ -23,6 +23,7 @@ import PendingCourse from "../pages/Dashboard/Instructor/PendingCourse";
 import RejectedCourse from "../pages/Dashboard/Instructor/RejectedCourse";
 import UpdateClass from "../pages/Dashboard/Instructor/UpdateClass";
 import ApplyInstructor from "../pages/Dashboard/Student/apply/ApplyInstructor";
+import NewAppliedInstructor from "../pages/Dashboard/Student/apply/NewAppliedInstructor";
 import EnrolledClasses from "../pages/Dashboard/Student/Enroll/EnrolledClasses";
 import Payment from "../pages/Dashboard/Student/Payment/History/Payment";
 import PaymentHistory from "../pages/Dashboard/Student/Payment/MyPaymentHistory";
@@ -104,6 +105,12 @@ export const router = createBrowserRouter([
         path: "apply-instructor",
         element: <ApplyInstructor />,
       },
+
+      {
+        path: "new-apply-instructor",
+        element: <NewAppliedInstructor />,
+      },
+
       {
         path: "user/payment",
         element: <Payment />,

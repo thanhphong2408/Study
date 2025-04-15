@@ -791,6 +791,32 @@ async function run() {
       res.send(result);
     });
 
+    // API để lấy tất cả các đơn đăng ký của người dùng theo email
+    app.get("/applied-instrustion/user/:email", async (req, res) => {
+      const { email } = req.params;
+
+      try {
+        const applications = await appliedCollection
+          .find({ email: email })
+          .toArray();
+        res.status(200).json(applications);
+      } catch (err) {
+        console.error(err);
+        res
+          .status(500)
+          .json({ message: "Có lỗi xảy ra khi lấy danh sách đơn." });
+      }
+    });
+    // get all applied instructor
+    app.get("/applied-instrustion/all", async (req, res) => {
+      try {
+        const result = await appliedCollection.find().toArray();
+        res.send(result);
+      } catch (err) {
+        res.status(500).send({ error: "Lỗi khi lấy danh sách instructor" });
+      }
+    });
+
     // appliend for instrustors
     app.post("/ass-instrustor", async (req, res) => {
       const data = req.body;
@@ -801,6 +827,79 @@ async function run() {
     app.get("/applied-instrustion/:email", async (req, res) => {
       const email = req.params.email;
       const result = await appliedCollection.findOne({ email });
+      res.send(result);
+    });
+
+    // Update status của instructor application
+    app.patch("/promote-to-instructor/:email", async (req, res) => {
+      const email = req.params.email;
+
+      try {
+        const result = await usersCollections.updateOne(
+          { email: { $regex: `^${email}$`, $options: "i" } }, // khớp không phân biệt hoa thường
+          { $set: { role: "instructor" } }
+        );
+
+        console.log("Update result:", result);
+
+        if (result.modifiedCount === 0) {
+          console.log("❌ Không tìm thấy user có email:", email);
+          return res
+            .status(404)
+            .send({ message: "Không tìm thấy user hoặc role không thay đổi" });
+        }
+
+        res.send({ message: "Cập nhật role thành công", result });
+      } catch (err) {
+        console.error("❌ Lỗi khi cập nhật role:", err);
+        res.status(500).send({ error: "Lỗi server khi cập nhật role" });
+      }
+    });
+
+    app.patch("/deny-instructor/:email", async (req, res) => {
+      const email = req.params.email;
+
+      try {
+        const result = await usersCollections.updateOne(
+          { email: { $regex: `^${email}$`, $options: "i" } },
+          { $set: { role: "user" } }
+        );
+        // console.log("Đang từ chối quyền của email:", email);
+        // console.log("Email khi deny:", req.params.email);
+        // console.log("Reset role result:", result);
+
+        if (result.modifiedCount === 0) {
+          return res.status(200).send({
+            message: "Quyền đã là 'user', không cần thay đổi thêm",
+            alreadyUser: true,
+          });
+        }
+
+        res.send({ message: "Đã từ chối và reset quyền thành công", result });
+      } catch (err) {
+        console.error("Lỗi khi reset role:", err);
+        res.status(500).send({ error: "Lỗi server khi reset role" });
+      }
+    });
+
+    app.patch("/update-instructor-status/:id", async (req, res) => {
+      const id = req.params.id;
+      const { status } = req.body;
+
+      // Tìm bản ghi hiện tại để so sánh trạng thái
+      const currentRequest = await appliedCollection.findOne({
+        _id: new ObjectId(id),
+      });
+
+      if (currentRequest.status === status) {
+        return res.send({ message: "Trạng thái không thay đổi." });
+      }
+
+      const result = await appliedCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status } }
+      );
+
       res.send(result);
     });
 

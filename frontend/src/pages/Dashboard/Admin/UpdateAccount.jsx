@@ -47,7 +47,9 @@ const UpdateAccount = () => {
       }
 
       updateData.photoUrl = imageUrl;
-      updateData.role = userCredentials.role; // giữ role cũ
+      if (!updateData.role) {
+        updateData.role = userCredentials.role;
+      }
 
       const res = await axiosSecure.put(
         `/update-user/${userCredentials._id}`,
@@ -55,7 +57,11 @@ const UpdateAccount = () => {
       );
 
       if (res.data.modifiedCount > 0) {
-        toast.success("Account updated successfully!");
+        toast.success("Account updated successfully!", {
+          duration: 4000,
+          icon: "✅",
+          position: "top-right",
+        });
         navigate("/dashboard/manage-users");
       } else {
         toast.error("Failed to update account. Please change data.");
